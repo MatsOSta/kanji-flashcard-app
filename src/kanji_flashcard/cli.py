@@ -8,15 +8,22 @@ from kanji_flashcard.loaders import load_kanji
 
 
 def study(path: Path, read_input: Callable[[], str] = input) -> None:
-    """Study the first Kanji in a JSON file."""
-    kanji = load_kanji(path)[0]
+    """Study each Kanji in a JSON file."""
+    kanji_list = load_kanji(path)
 
-    print(kanji.character)
-    print("Press Enter to reveal the answer.")
-    read_input()
-    print(f"Meanings: {', '.join(kanji.meanings)}")
-    print(f"Onyomi: {', '.join(kanji.onyomi)}")
-    print(f"Kunyomi: {', '.join(kanji.kunyomi)}")
+    if not kanji_list:
+        print("There are no Kanji to study.")
+        return
+
+    for kanji in kanji_list:
+        print(kanji.character)
+        print("Press Enter to reveal the answer.")
+        read_input()
+        print(f"Meanings: {', '.join(kanji.meanings)}")
+        print(f"Onyomi: {', '.join(kanji.onyomi)}")
+        print(f"Kunyomi: {', '.join(kanji.kunyomi)}")
+
+    print(f"Study complete: {len(kanji_list)} Kanji studied.")
 
 
 def main(

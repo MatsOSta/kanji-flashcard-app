@@ -10,23 +10,38 @@ def test_main_prints_placeholder_message(capsys) -> None:
     assert captured.out == "Kanji Flashcard App is ready.\n"
 
 
-def test_study_reveals_first_kanji_after_input(capsys) -> None:
+def test_study_reveals_each_kanji_in_file_order(capsys) -> None:
     fixture_path = Path(__file__).parent / "fixtures" / "kanji.json"
-    input_was_requested = False
+    input_requests = 0
 
     def press_enter() -> str:
-        nonlocal input_was_requested
-        input_was_requested = True
+        nonlocal input_requests
+        input_requests += 1
         return ""
 
     main(["study", str(fixture_path)], read_input=press_enter)
 
     captured = capsys.readouterr()
-    assert input_was_requested
+    assert input_requests == 2
     assert captured.out == (
         "日\n"
         "Press Enter to reveal the answer.\n"
         "Meanings: day, sun\n"
         "Onyomi: ニチ, ジツ\n"
         "Kunyomi: ひ, か\n"
+        "月\n"
+        "Press Enter to reveal the answer.\n"
+        "Meanings: month, moon\n"
+        "Onyomi: ゲツ, ガツ\n"
+        "Kunyomi: つき\n"
+        "Study complete: 2 Kanji studied.\n"
     )
+
+
+def test_study_reports_an_empty_dataset(capsys) -> None:
+    fixture_path = Path(__file__).parent / "fixtures" / "empty_kanji.json"
+
+    main(["study", str(fixture_path)])
+
+    captured = capsys.readouterr()
+    assert captured.out == "There are no Kanji to study.\n"
