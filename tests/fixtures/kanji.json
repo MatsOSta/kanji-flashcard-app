@@ -1,0 +1,14 @@
+[
+  {
+    "character": "日",
+    "meanings": ["day", "sun"],
+    "onyomi": ["ニチ", "ジツ"],
+    "kunyomi": ["ひ", "か"]
+  },
+  {
+    "character": "月",
+    "meanings": ["month", "moon"],
+    "onyomi": ["ゲツ", "ガツ"],
+    "kunyomi": ["つき"]
+  }
+]
