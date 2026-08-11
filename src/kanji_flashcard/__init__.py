@@ -1,0 +1,1 @@
+"""Kanji flashcard application package."""
