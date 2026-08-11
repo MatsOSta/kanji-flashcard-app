@@ -12,30 +12,39 @@ def test_main_prints_placeholder_message(capsys) -> None:
 
 def test_study_reveals_each_kanji_in_file_order(capsys) -> None:
     fixture_path = Path(__file__).parent / "fixtures" / "kanji.json"
-    input_requests = 0
+    responses = iter(["", "y", "", "n"])
 
-    def press_enter() -> str:
-        nonlocal input_requests
-        input_requests += 1
-        return ""
-
-    main(["study", str(fixture_path)], read_input=press_enter)
+    main(["study", str(fixture_path)], read_input=lambda: next(responses))
 
     captured = capsys.readouterr()
-    assert input_requests == 2
     assert captured.out == (
         "日\n"
         "Press Enter to reveal the answer.\n"
         "Meanings: day, sun\n"
         "Onyomi: ニチ, ジツ\n"
         "Kunyomi: ひ, か\n"
+        "Did you know it? [y/n]:\n"
         "月\n"
         "Press Enter to reveal the answer.\n"
         "Meanings: month, moon\n"
         "Onyomi: ゲツ, ガツ\n"
         "Kunyomi: つき\n"
-        "Study complete: 2 Kanji studied.\n"
+        "Did you know it? [y/n]:\n"
+        "Study complete.\n"
+        "Total Kanji studied: 2\n"
+        "Known: 1\n"
+        "Unknown: 1\n"
     )
+
+
+def test_study_asks_again_after_an_invalid_answer(capsys) -> None:
+    fixture_path = Path(__file__).parent / "fixtures" / "kanji.json"
+    responses = iter(["", "maybe", "y", "", "n"])
+
+    main(["study", str(fixture_path)], read_input=lambda: next(responses))
+
+    captured = capsys.readouterr()
+    assert captured.out.count("Did you know it? [y/n]:\n") == 3
 
 
 def test_study_reports_an_empty_dataset(capsys) -> None:
